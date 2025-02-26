@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia - UNETRANS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Universidad Experimental del Transporte (UNETRANS)</h1>
+    <h2>Control de Asistencia - Prof. Felipe Martínez</h2>
+    <form id="asistenciaForm">
+        <label for="nombre">Nombre y Apellido del Alumno:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Juan Pérez" required>
+
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required>
+
+        <label for="seccion">Sección:</label>
+        <select id="seccion" name="seccion" required>
+            <option value="">Seleccionar</option>
+            <option value="A">Sección A</option>
+            <option value="B">Sección B</option>
+            <option value="C">Sección C</option>
+        </select>
+
+        <label for="trimestre">Trimestre:</label>
+        <select id="trimestre" name="trimestre" required>
+            <option value="">Seleccionar</option>
+            <option value="1">Trimestre 1</option>
+            <option value="2">Trimestre 2</option>
+            <option value="3">Trimestre 3</option>
+        </select>
+
+        <label for="asistencia">Asistió:</label>
+        <select id="asistencia" name="asistencia" required>
+            <option value="">Seleccionar</option>
+            <option value="si">Sí</option>
+            <option value="no">No</option>
+        </select>
+
+        <button type="submit">Registrar Asistencia</button>
+    </form>
+    <div class="footer">
+        &copy; 2023 Universidad Experimental del Transporte (UNETRANS)
+    </div>
+
+    <script>
+        document.getElementById('asistenciaForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const fecha = document.getElementById('fecha').value;
+            const seccion = document.getElementById('seccion').value;
+            const trimestre = document.getElementById('trimestre').value;
+            const asistencia = document.getElementById('asistencia').value;
+
+            if (!nombre || !fecha || !seccion || !trimestre || !asistencia) {
+                alert('Por favor, complete todos los campos.');
+                return;
+            }
+
+            // Datos a enviar
+            const data = {
+                nombre,
+                fecha,
+                seccion,
+                trimestre,
+                asistencia: asistencia === 'si' ? 'Sí' : 'No'
+            };
+
+            // URL del servicio web de Google Apps Script
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbzrpUWmpTh_PZeTxiBGb-ds4Exq8Po5oH86Ooynd-fP/dev'; // Reemplaza con la URL de tu servicio web
+
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('Asistencia registrada correctamente.');
+                    this.reset();
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ocurrió un error al conectar con el servidor.');
+            }
+        });
+    </script>
+</body>
+</html>
